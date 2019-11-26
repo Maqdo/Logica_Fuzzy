@@ -1,41 +1,42 @@
-Nome: Gabriel Macedo da Silva
+UNIVERSIDADE CAT√ìLICA DOM BOSCO
+CURSO DE ENGENHARIA DA COMPUTA√á√ÉO
+DISCIPLINA DE INTELIG√äNCIA ARTIFICIAL
+ALUNO: GABRIEL MACEDO DA SILVA
 RA: 160949
-Disciplina: InteligÍncia Artificial
-Docente: Hermeson Pistori
+DOCENTE: HEMERSON PISTORI
+ATIVIDADE: Utilize o scikit-fuzzy para representar algum problema de seu interesse e permitir que perguntas sejam realizadas e respondidas usando infer√™ncia difusa.
 
-----------------------------------
-ANALISADOR
+### Programas utilizados ###
 
-#Resumo
+- O projeto foi desenvolvido em m√°quinas com Linux UBUNTU 16.04 LTS, feito em Python 3 e usando as bibliotecas Skfuzzy, Numpy e MatplotLib.
 
->O programa utiliza entradas como [] e [] para gerar uma saÌda que contÈm []
+### Instala√ß√£o da Bibliotecas ###
 
->… utilizado uma funÁ„o que cria um mapeamento entre valores nÌtidos e difusos atravÈs de uma funÁ„o de pertinÍncia padr„o
+ - Para instalar as bibliotecas, abra o terminal e escreva os comandos abaixo, um de cada vez:
 
->
+ > sudo apt install python3-pip
+ > pip3 install --user networkx==2.3
+ > pip3 install --user scikit-fuzzy
+ > pip3 install --user matplotlib
+ > pip3 install --user numpy
 
------------------------------------
-INSTALA«√O DAS BIBLIOTECAS
+### Como utilizar ###
 
-# ApÛs abrir o terminal, utilize os comandos abaixo para instalar as bibliotecas necess·rias:
+ - Para utilizar o programa corretamente √© preciso certificar que todas as bibliotecas necess√°rias estejam instaladas;
+ - Extraia o arquivo para a pasta desejada;
+ - Abra o terminal e acesse o diret√≥rio extra√≠do;
+ - Execute o arquivo do programa pelo comando 'python Logica_Fuzzy.py';
+ - Uma janela ir√° se abrir contendo os campos onde ser√° inseridos os valores e bot√µes que realizam opera√ß√µes de c√°lculo e exibi√ß√£o dos gr√°ficos;
+ - Para finalizar o programa, feche todas as janelas abertas ou digite o comando "Ctrl+C" no terminal;
 
-> sudo apt install python3-pip
-> pip3 install --user networkx==2.3
-> pip3 install --user scikit-fuzzy
-> pip3 install --user matplotlib
-> pip3 install --user numpy
+### Funcionamento ###
 
-------------------------------------
-UTILIZA«√O
+ - O programa utiliza entradas como velocidade e limite (de velocidade) para calcular o valor da multa, que varia com as entradas e a diferen√ßa entre elas.
+ - Caso a velocidade seja menor ou igual ao limite n√£o ser√° aplicada multa, apenas uma mensagem de "sem multa" e "advert√™ncia".
+ - Os gr√°ficos exibem as fun√ß√µes de partin√™ncia e o resultado das entradas inseridas.
 
-ApÛs realizar o download do arquivo siga os seguintes passos para execut·-lo:
+### Contribui√ß√µes ###
 
->Extraia o arquivo
->Com o terminal aberto v· atÈ a pasta que foi extraida
->Escreva o comando "python Logica_Fuzzy.py"
->Ser· aberto uma interface que representa a aplicaÁ„o
->Insira um valor de 0 ‡ 10 em cada campo
->Clique em calcular
->O resultado ser· exibido na parte inferior da tela
-
---------------------------------------
+ - O aluno Ergon Zamarian Lima com o aux√≠lio do desenvolvimento do c√≥digo e com as bibliotecas utilizadas.
+ - O v√≠deo https://www.youtube.com/watch?v=ZLLbZLcCTcI&feature=youtu.be, com o entendimento e desenvolvimento do c√≥digo.
+ - https://www.devmedia.com.br/tkinter-interfaces-graficas-em-python/33956, com o entendimento e aux√≠lio para o desenvolvimendo da interface gr√°fica.

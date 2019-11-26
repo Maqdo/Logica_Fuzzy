@@ -9,18 +9,18 @@ import matplotlib.pyplot as plot
 # Variáveis do Problema
 velocidade = ctrl.Antecedent(np.arange(0, 101, 1), "velocidade")
 limite = ctrl.Antecedent(np.arange(0, 101, 1), "limite")
-multa = ctrl.Consequent(np.arange(0, 101, 1), "multa")
+multa = ctrl.Consequent(np.arange(0, 1001, 1), "multa")
 
 velocidade.automf(names=["baixa", "media", "alta"])
 
 # Cria funções de pertinência usando tipos variados
 limite["baixo"] = fuzz.trimf(limite.universe, [0, 0, 50])
-limite["medio"] = fuzz.gaussmf(limite.universe, 50, 10)
+limite["medio"] = fuzz.gaussmf(limite.universe, 50, 5)
 limite["alto"] = fuzz.gaussmf(limite.universe, 100, 20)
 
-multa["baixa"] = fuzz.trapmf(multa.universe, [0, 0, 20, 50])
-multa["media"] = fuzz.trimf(multa.universe, [30, 50, 70])
-multa["alta"] = fuzz.trimf(multa.universe, [50, 100, 100])
+multa["baixa"] = fuzz.trapmf(multa.universe, [0, 0, 200, 500])
+multa["media"] = fuzz.trimf(multa.universe, [300, 500, 700])
+multa["alta"] = fuzz.trimf(multa.universe, [500, 1000, 1000])
 
 # Regras de decisões
 rule1 = ctrl.Rule(limite["baixo"] & velocidade["alta"], multa["alta"])
@@ -28,6 +28,9 @@ rule2 = ctrl.Rule(limite["medio"] & velocidade["alta"], multa["media"])
 rule3 = ctrl.Rule(limite["alto"] & velocidade["alta"], multa["baixa"])
 rule4 = ctrl.Rule(limite["baixo"] & velocidade["media"], multa["media"])
 rule5 = ctrl.Rule(limite["medio"] & velocidade["media"], multa["baixa"])
+rule6 = ctrl.Rule(limite["baixo"] & velocidade["baixa"], multa["baixa"])
+rule7 = ctrl.Rule(limite["baixo"] & velocidade["media"], multa["media"])
+rule8 = ctrl.Rule(limite["baixo"] & velocidade["alta"], multa["alta"])
 
 class Aplicacao:
     def __init__(self, master=None):
@@ -79,7 +82,7 @@ class Aplicacao:
 
         #######################################
 
-        self.titulo = Label(self.conteiner1, text="Teste")
+        self.titulo = Label(self.conteiner1, text="Analisador de multa")
         self.titulo["font"] = ("Arial", "10")
         self.titulo.pack()
 
@@ -93,7 +96,7 @@ class Aplicacao:
         self.respvelocidade["width"] = 10
         self.respvelocidade.pack(side = LEFT)
 
-        self.lbllimite = Label(self.conteiner3, text="Limite de velocidade:")
+        self.lbllimite = Label(self.conteiner3, text="Limite:")
         self.lbllimite["font"] = self.fonte
         self.lbllimite["width"] = 20
         self.lbllimite.pack(side=LEFT)
@@ -109,7 +112,7 @@ class Aplicacao:
         self.btncalculo["command"] = self.resultado_calculo
         self.btncalculo.pack()
 
-        self.textresultado = Label(self.conteiner5, text="Resultado:")
+        self.textresultado = Label(self.conteiner5, text="Valor da multa:")
         self.textresultado["font"] = ("Arial", "10", "bold")
         self.textresultado.pack()
 
@@ -117,15 +120,15 @@ class Aplicacao:
         self.resultcalculo["font"] = self.fonte
         self.resultcalculo.pack()
 
-        self.btngrafico = Button(self.conteiner7, text="Graficos1")
+        self.btngrafico = Button(self.conteiner7, text="Graficos função")
         self.btngrafico["font"] = self.fonte
-        self.btngrafico["width"] = 10
+        self.btngrafico["width"] = 15
         self.btngrafico["command"] = self.print_grafico
         self.btngrafico.pack()
 
-        self.btngraficoresult = Button(self.conteiner8, text="Graficos2")
+        self.btngraficoresult = Button(self.conteiner8, text="Graficos resultado")
         self.btngraficoresult["font"] = self.fonte
-        self.btngraficoresult["width"] = 10
+        self.btngraficoresult["width"] = 15
         self.btngraficoresult["command"] = self.grafico_resultado
         self.btngraficoresult.pack()
 
@@ -133,25 +136,26 @@ class Aplicacao:
         aux1 = self.respvelocidade.get()
         aux2 = self.resplimite.get()
 
-        multa_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5])
+        multa_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8])
         multa_simulador = ctrl.ControlSystemSimulation(multa_ctrl)
         multa_simulador.input["velocidade"] = float(aux1)
         multa_simulador.input["limite"] = float(aux2)
         multa_simulador.compute()
 
-        print(round(multa_simulador.output["multa"]))
-        self.resultcalculo["text"] = round(multa_simulador.output["multa"])
+        if aux1 > aux2:
+            print(round(multa_simulador.output["multa"]))
+            self.resultcalculo["text"] = round(multa_simulador.output["multa"])
+        elif aux1 == aux2:
+            print(round(multa_simulador.output["multa"]))
+            self.resultcalculo["text"] = "advertencia"
+        else:
+            print(round(multa_simulador.output["multa"]))
+            self.resultcalculo["text"] = "sem multa"
 
     def print_grafico(self):
         velocidade.view()
-        #cv2.imshow('Imagem Original',velocidade.view()) 
-        #cv2.moveWindow('Imagem Original',100,100)
         limite.view()
-        #cv2.imshow('Imagem Original',limite.view()) 
-        #cv2.moveWindow('Imagem Original',100,100)
         multa.view()
-        #cv2.imshow('Imagem Original',multa.view())
-        #cv2.moveWindow('Imagem Original',100,100)
 
     def grafico_resultado(self):
         aux1 = self.respvelocidade.get()
