@@ -23,9 +23,11 @@ multa["media"] = fuzz.trimf(multa.universe, [30, 50, 70])
 multa["alta"] = fuzz.trimf(multa.universe, [50, 100, 100])
 
 # Regras de decisões
-rule1 = ctrl.Rule(limite["excelente"] | velocidade["alta"], multa["alta"])
-rule2 = ctrl.Rule(limite["aceitável"], multa["media"])
-rule3 = ctrl.Rule(limite["ruim"] & velocidade["baixa"], multa["baixa"])
+rule1 = ctrl.Rule(limite["baixo"] & velocidade["alta"], multa["alta"])
+rule2 = ctrl.Rule(limite["medio"] & velocidade["alta"], multa["media"])
+rule3 = ctrl.Rule(limite["alto"] & velocidade["alta"], multa["baixa"])
+rule4 = ctrl.Rule(limite["baixo"] & velocidade["media"], multa["media"])
+rule5 = ctrl.Rule(limite["medio"] & velocidade["media"], multa["baixa"])
 
 class Aplicacao:
     def __init__(self, master=None):
@@ -131,7 +133,7 @@ class Aplicacao:
         aux1 = self.respvelocidade.get()
         aux2 = self.resplimite.get()
 
-        multa_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
+        multa_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5])
         multa_simulador = ctrl.ControlSystemSimulation(multa_ctrl)
         multa_simulador.input["velocidade"] = float(aux1)
         multa_simulador.input["limite"] = float(aux2)
@@ -155,7 +157,7 @@ class Aplicacao:
         aux1 = self.respvelocidade.get()
         aux2 = self.resplimite.get()
 
-        multa_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
+        multa_ctrl = ctrl.ControlSystem([rule1, rule2, rule3, rule4, rule5])
         multa_simulador = ctrl.ControlSystemSimulation(multa_ctrl)
         multa_simulador.input["velocidade"] = float(aux1)
         multa_simulador.input["limite"] = float(aux2)
