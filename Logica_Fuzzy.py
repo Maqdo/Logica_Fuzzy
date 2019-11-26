@@ -7,25 +7,25 @@ matplotlib.use("TkAgg")
 import matplotlib.pyplot as plot
 
 # Variáveis do Problema
-comida = ctrl.Antecedent(np.arange(0, 11, 1), "comida")
-servico = ctrl.Antecedent(np.arange(0, 11, 1), "servico")
-gorjeta = ctrl.Consequent(np.arange(0, 26, 1), "gorjeta")
+velocidade = ctrl.Antecedent(np.arange(0, 101, 1), "velocidade")
+limite = ctrl.Antecedent(np.arange(0, 101, 1), "limite")
+multa = ctrl.Consequent(np.arange(0, 101, 1), "multa")
 
-comida.automf(names=["péssima", "comível", "deliciosa"])
+velocidade.automf(names=["baixa", "media", "alta"])
 
 # Cria funções de pertinência usando tipos variados
-servico["ruim"] = fuzz.trimf(servico.universe, [0, 0, 5])
-servico["aceitável"] = fuzz.gaussmf(servico.universe, 5, 2)
-servico["excelente"] = fuzz.gaussmf(servico.universe, 10, 3)
+limite["baixo"] = fuzz.trimf(limite.universe, [0, 0, 50])
+limite["medio"] = fuzz.gaussmf(limite.universe, 50, 10)
+limite["alto"] = fuzz.gaussmf(limite.universe, 100, 20)
 
-gorjeta["baixa"] = fuzz.trimf(gorjeta.universe, [0, 0, 13])
-gorjeta["média"] = fuzz.trapmf(gorjeta.universe, [0, 13, 15, 25])
-gorjeta["alta"] = fuzz.trimf(gorjeta.universe, [15, 25, 25])
+multa["baixa"] = fuzz.trapmf(multa.universe, [0, 0, 20, 50])
+multa["media"] = fuzz.trimf(multa.universe, [30, 50, 70])
+multa["alta"] = fuzz.trimf(multa.universe, [50, 100, 100])
 
 # Regras de decisões
-rule1 = ctrl.Rule(servico["excelente"] | comida["deliciosa"], gorjeta["alta"])
-rule2 = ctrl.Rule(servico["aceitável"], gorjeta["média"])
-rule3 = ctrl.Rule(servico["ruim"] & comida["péssima"], gorjeta["baixa"])
+rule1 = ctrl.Rule(limite["excelente"] | velocidade["alta"], multa["alta"])
+rule2 = ctrl.Rule(limite["aceitável"], multa["media"])
+rule3 = ctrl.Rule(limite["ruim"] & velocidade["baixa"], multa["baixa"])
 
 class Aplicacao:
     def __init__(self, master=None):
@@ -81,25 +81,25 @@ class Aplicacao:
         self.titulo["font"] = ("Arial", "10")
         self.titulo.pack()
 
-        self.lblcomida = Label(self.conteiner2, text="Qualidade da Comida:")
-        self.lblcomida["font"] = self.fonte
-        self.lblcomida["width"] = 20
-        self.lblcomida.pack(side = LEFT)
+        self.lblvelocidade = Label(self.conteiner2, text="Velocidade:")
+        self.lblvelocidade["font"] = self.fonte
+        self.lblvelocidade["width"] = 20
+        self.lblvelocidade.pack(side = LEFT)
 
-        self.respcomida = Entry(self.conteiner2)
-        self.respcomida["font"] = self.fonte
-        self.respcomida["width"] = 10
-        self.respcomida.pack(side = LEFT)
+        self.respvelocidade = Entry(self.conteiner2)
+        self.respvelocidade["font"] = self.fonte
+        self.respvelocidade["width"] = 10
+        self.respvelocidade.pack(side = LEFT)
 
-        self.lblservico = Label(self.conteiner3, text="Qualidade do Servico:")
-        self.lblservico["font"] = self.fonte
-        self.lblservico["width"] = 20
-        self.lblservico.pack(side=LEFT)
+        self.lbllimite = Label(self.conteiner3, text="Limite de velocidade:")
+        self.lbllimite["font"] = self.fonte
+        self.lbllimite["width"] = 20
+        self.lbllimite.pack(side=LEFT)
 
-        self.respservico = Entry(self.conteiner3)
-        self.respservico["font"] = self.fonte
-        self.respservico["width"] = 10
-        self.respservico.pack(side=LEFT)
+        self.resplimite = Entry(self.conteiner3)
+        self.resplimite["font"] = self.fonte
+        self.resplimite["width"] = 10
+        self.resplimite.pack(side=LEFT)
 
         self.btncalculo = Button(self.conteiner4, text="Calcular")
         self.btncalculo["font"] = self.fonte
@@ -128,36 +128,42 @@ class Aplicacao:
         self.btngraficoresult.pack()
 
     def resultado_calculo(self):
-        aux1 = self.respcomida.get()
-        aux2 = self.respservico.get()
+        aux1 = self.respvelocidade.get()
+        aux2 = self.resplimite.get()
 
-        gorjeta_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
-        gorjeta_simulador = ctrl.ControlSystemSimulation(gorjeta_ctrl)
-        gorjeta_simulador.input["comida"] = float(aux1)
-        gorjeta_simulador.input["servico"] = float(aux2)
-        gorjeta_simulador.compute()
+        multa_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
+        multa_simulador = ctrl.ControlSystemSimulation(multa_ctrl)
+        multa_simulador.input["velocidade"] = float(aux1)
+        multa_simulador.input["limite"] = float(aux2)
+        multa_simulador.compute()
 
-        print(round(gorjeta_simulador.output["gorjeta"]))
-        self.resultcalculo["text"] = round(gorjeta_simulador.output["gorjeta"])
+        print(round(multa_simulador.output["multa"]))
+        self.resultcalculo["text"] = round(multa_simulador.output["multa"])
 
     def print_grafico(self):
-        comida.view()
-        servico.view()
-        gorjeta.view()
+        velocidade.view()
+        #cv2.imshow('Imagem Original',velocidade.view()) 
+        #cv2.moveWindow('Imagem Original',100,100)
+        limite.view()
+        #cv2.imshow('Imagem Original',limite.view()) 
+        #cv2.moveWindow('Imagem Original',100,100)
+        multa.view()
+        #cv2.imshow('Imagem Original',multa.view())
+        #cv2.moveWindow('Imagem Original',100,100)
 
     def grafico_resultado(self):
-        aux1 = self.respcomida.get()
-        aux2 = self.respservico.get()
+        aux1 = self.respvelocidade.get()
+        aux2 = self.resplimite.get()
 
-        gorjeta_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
-        gorjeta_simulador = ctrl.ControlSystemSimulation(gorjeta_ctrl)
-        gorjeta_simulador.input["comida"] = float(aux1)
-        gorjeta_simulador.input["servico"] = float(aux2)
-        gorjeta_simulador.compute()
+        multa_ctrl = ctrl.ControlSystem([rule1, rule2, rule3])
+        multa_simulador = ctrl.ControlSystemSimulation(multa_ctrl)
+        multa_simulador.input["velocidade"] = float(aux1)
+        multa_simulador.input["limite"] = float(aux2)
+        multa_simulador.compute()
 
-        comida.view(sim=gorjeta_simulador)
-        servico.view(sim=gorjeta_simulador)
-        gorjeta.view(sim=gorjeta_simulador)
+        velocidade.view(sim=multa_simulador)
+        limite.view(sim=multa_simulador)
+        multa.view(sim=multa_simulador)
 
 root = Tk()
 Aplicacao(root)
